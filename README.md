@@ -11,7 +11,7 @@ http://sysbiocomp.ucsd.edu/public/wenxingzhao/MUSIC_docker/intro.html#library-co
 MUSIC derives a paired-end sequencing library which includes cell barcodes, complexes barcodes and DNA/RNA insert sequences. The first step to analyze MUSIC data requires extract all essential information from the paired-end fastq files. Step by step data processing documentation is here: http://sysbiocomp.ucsd.edu/public/wenxingzhao/MUSIC_docker/step.html. 
 
 ## 3.1 MUSIC-docker
-We developed a docker container called MUSIC-docker which is a wrapper of a Snakemake pipeline that enables raw data processing. A full documentation of MUSIC-docker can be found here: [http://sysbiocomp.ucsd.edu/public/wenxingzhao/MUSIC_docker/index.html](http://sysbiocomp.ucsd.edu/public/wenxingzhao/MUSIC_docker/rundocker.html)
+We developed a docker container called MUSIC-docker which is a wrapper of a Snakemake pipeline that enables raw data processing. A full documentation of MUSIC-docker can be found here: [http://sysbiocomp.ucsd.edu/public/wenxingzhao/MUSIC_docker/index.html](http://sysbiocomp.ucsd.edu/public/wenxingzhao/MUSIC_docker/rundocker.html). You can also make your own updates and re-compile to build your own version of MUSIC-docker using source code here: https://github.com/Irenexzwen/MUSIC-docker
 
 ## 3.2 MUSIC Snakemake pipeline
 If you are familiar with Snakemake pipeline, we also provided a Snakemake pipeline where you can update the config files according to your local working enviroment. 
