@@ -54,7 +54,7 @@ windows.1mb <- gen_windows(1e6, 'hg38') %>% plyranges::filter(seqnames %in% past
 CB_total_rna <- lapply(brain_list, function(LIB){
   
   dna_clu_size <- fread(
-    paste0("/Brain_tissue_",LIB,"_deepseq/outputs/6_stats/merge_RNA_human.sort.cell_reads.csv")) %>%
+    paste0("/ZF____brain_tissue_",LIB,"_deepseq/outputs/6_stats/merge_RNA_human.sort.cell_reads.csv")) %>%
     set_colnames(c("CB","rna_reads")) %>%
     mutate(CB_new = paste0(LIB,"_",CB)) %>% dplyr::select(-CB)
   
@@ -126,6 +126,7 @@ pdf("/Figures/Figure-4a-XIST-sex-expr.pdf",
 g_expr_F_M_XIST
 dev.off()
 
+
 ## ---- Figure 4b RD contact 2D map chrX ----------
 
 # RD heatmap for all cells combined
@@ -176,16 +177,22 @@ g_female <-
         panel.border = element_rect(colour = "black", fill=NA, size=0.2),
         plot.margin = unit(c(0,0,0,0),'in'))
 
-
+# png("/Figures/12_1_XIST/Figure-MXIRD.png",
+#     width = 5,height = 5.5, units = 'in', res = 300)
 pdf("/Figures/Figure-4b-RD2Dmap-chrX.pdf",
     width = 1.8,height = 1.8)
 g_female
 dev.off()
 
 
+
+
+
 ## ---- Figure 4c XIST genome coverage 1D ----------
 
 all_cell_info <- readRDS("/data/new_4_XIST/all_cell_XIST_chrXDNA_tol_reads_info.rds")
+
+
 
 CTYPES = c("Ex", "In", "Vas", "Ast", "Opc", "Oli", "Mic")
 CLU_SIZE = 5000
@@ -193,7 +200,7 @@ CLU_SIZE = 5000
 CB_total_rna <- lapply(brain_list, function(LIB){
   
   dna_clu_size <- fread(
-    paste0("/Brain_tissue_",LIB,"_deepseq/outputs/6_stats/merge_RNA_human.sort.cell_reads.csv")) %>%
+    paste0("/ZF____brain_tissue_",LIB,"_deepseq/outputs/6_stats/merge_RNA_human.sort.cell_reads.csv")) %>%
     set_colnames(c("CB","rna_reads")) %>%
     mutate(CB_new = paste0(LIB,"_",CB)) %>% dplyr::select(-CB)
   
@@ -307,6 +314,8 @@ g_bar %>% aplot::insert_bottom(g_chr, height = 0.5)
 dev.off()
 
 
+
+
 ## ---- Figure 4d XIST+ XIST- contrast DD contact ----------
 
 # remain_DNA_gr <- readRDS("/data/new_4_XIST/sc_GDCF/RNAreads_filtered_remain_sc_chrX_DNA_gr.rds")
@@ -406,7 +415,7 @@ dev.off()
 # the legend need to add manually (plot with legend first)
 
 
-## ---- Figure 4g XIST linked contrast curve ----------
+## ---- Figure 4e XIST linked contrast curve ----------
 
 # import genomic bins for GDCF
 hg38_arm_size <- fread("http://hgdownload.cse.ucsc.edu/goldenpath/hg38/database/cytoBand.txt.gz",
@@ -443,18 +452,28 @@ one_chr_DNAgr_dist_df <- function(DNA_gr){
 
 remaining_cells <- info_df_all %>% filter(tol_RNA>=5000) %>% .[['CB']]
 
+# remain_DNA_gr <- pbmcapply::pbmclapply( c("Ex", "In", "Oli", "Mic", "Vas", "Opc", "Ast"), function(CTYPE){
+#   
+#   DNA_gr <- import_grs(CTYPE = CTYPE, mole = "DNA", cond = "all", sex="F", import_clu = F) %>% 
+#     filter(CB %in% remaining_cells) %>% filter(seqnames == "chrX")
+#   return(DNA_gr)
+#     
+# }, mc.cores = 10) %>% do.call(c,.)
+# saveRDS(remain_DNA_gr, "/data/new_4_XIST/sc_GDCF/RNAreads_filtered_remain_sc_chrX_DNA_gr.rds")
 
 
 remain_DNA_gr <- readRDS("/data/new_4_XIST/sc_GDCF/RNAreads_filtered_remain_sc_chrX_DNA_gr.rds")
 
-remain_RNA_gr <- pbmcapply::pbmclapply( c("Ex", "In", "Oli", "Mic", "Vas", "Opc", "Ast"), function(CTYPE){
-  
-  RNA_gr <- import_grs(CTYPE = CTYPE, mole = "RNA", cond = "all", sex="F", import_clu = F) %>% 
-    filter(CB %in% remaining_cells) 
-  
-  return(RNA_gr)
-  
-}, mc.cores = 10) %>% do.call(c,.)
+# remain_RNA_gr <- pbmcapply::pbmclapply( c("Ex", "In", "Oli", "Mic", "Vas", "Opc", "Ast"), function(CTYPE){
+#   
+#   RNA_gr <- import_grs(CTYPE = CTYPE, mole = "RNA", cond = "all", sex="F", import_clu = F) %>% 
+#     filter(CB %in% remaining_cells) 
+#   
+#   return(RNA_gr)
+#   
+# }, mc.cores = 10) %>% do.call(c,.)
+# saveRDS(remain_RNA_gr, "/data/new_4_XIST/sc_GDCF/RNAreads_filtered_remain_sc_RNA_gr.rds")
+remain_RNA_gr <- readRDS("/data/new_4_XIST/sc_GDCF/RNAreads_filtered_remain_sc_RNA_gr.rds")
 
 
 # remaining cells, no XIST DNA reads
@@ -463,7 +482,7 @@ DNA_gr_nonXIST_df <- one_chr_DNAgr_dist_df(DNA_gr_nonXIST) %>% mutate(type="no_c
 
 
 # remaining cells, no XIST, but involved in RD clusters' DNA
-gtfgr36 <- readRDS("/database/Human/genome/Robj/gtf36_gene_granges.rds")
+gtfgr36 <- readRDS("/mnt/extraids/SDSC_NFS/wenxingzhao/database/Human/genome/Robj/gtf36_gene_granges.rds")
 GOI_gr <- gtfgr36 %>% plyranges::filter(gene_name == "XIST")
 XIST_RNA_gr <- remain_RNA_gr[queryHits(findOverlaps(remain_RNA_gr, GOI_gr, ignore.strand=F))] # XIST RNA grs and clusters
 
@@ -494,6 +513,8 @@ chuncks_df_all <- lapply(1:length(N_chunk_cells), function(idx){
   return(rbind(XIST_linked_DNA_gr_df, XIST_no_linked_DNA_gr_df))
 }) %>% do.call(rbind,.)
 
+saveRDS(chuncks_df_all, "/data/Figure-4-XIST-GDCF-curve-by-group.rds")
+chuncks_df_all <- readRDS("/data/Figure-4-XIST-GDCF-curve-by-group.rds")
 
 # combine all and plot
 chuncks_group <- chuncks_df_all %>% mutate(group = gsub("Coated_(group.*)_XIST.*$", '\\1', type))
@@ -575,7 +596,7 @@ dev.off()
 chisq2_merged_df <- XIST_linked_onecurve %>% left_join(all_no_XIST_linked, by=c("dist_cut"="dist_cut"))
 chisq.test(data.frame(one = chisq2_merged_df$ct.x, two = chisq2_merged_df$ct.y) %>% as.matrix())
 
-## ---- Figure 4h GDCF XIST 4 groups ----------
+## ---- Figure 4f GDCF XIST 4 groups ----------
 
 chuncks_group <- readRDS("/data/Figure-4-XIST-GDCF-curve-chuncks_group.rds")
 non_coated_group <- readRDS("/data/Figure-4-XIST-GDCF-curve-non_coated_group.rds")
@@ -638,7 +659,7 @@ g_GDCF_groups
 dev.off()
 
 
-## ---- Figure 4i ExN sc XIST RD heatmap ----------
+## ---- Figure 4g ExN sc XIST RD heatmap ----------
 
 CTYPE = "Ex"
 CLU_SIZE = 5000
@@ -707,7 +728,9 @@ draw(
 )
 dev.off()
 
-## ---- Figure 4j ExN, InN, Ast GDCF curve ----------
+
+
+## ---- Figure 4h ExN, InN, Ast GDCF curve ----------
 
 celltype_GDCF_df <- readRDS("/data/new_4_XIST/Ex_In_Ast_XIST_linked_GDCF.rds")
 
@@ -768,7 +791,7 @@ dev.off()
 
 
 
-## ---- Figure 4k ExN InN Ast contact contrast matrix ----------
+## ---- Figure 4i ExN InN Ast contact contrast matrix ----------
 
 
 pbmcapply::pbmclapply(c("Ex", "In", "Ast"), function(CTYPE){

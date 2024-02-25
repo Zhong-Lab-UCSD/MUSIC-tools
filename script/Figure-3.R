@@ -22,7 +22,7 @@ theme_no_axis <- theme(axis.line = element_blank(),
                        axis.text = element_blank(),
                        axis.title = element_blank())
 
-source("sciMARGI_utils2.R")
+source("MUSIC_utils2.R")
 gtfgr36 <- readRDS("/database/Human/genome/Robj/gtf36_gene_granges.rds")
 
 # sample meta info, copy pasted from google sheet: https://docs.google.com/spreadsheets/d/1q7RR6euJ0MTmcdclTPZnpLb8yqBsSNa9/edit#gid=1163861362
