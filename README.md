@@ -14,6 +14,6 @@ MUSIC derives a paired-end sequencing library which includes cell barcodes, comp
 We developed a docker container called MUSIC-docker which is a wrapper of a Snakemake pipeline that enables raw data processing. A full documentation of MUSIC-docker can be found here: [http://sysbiocomp.ucsd.edu/public/wenxingzhao/MUSIC_docker/index.html](http://sysbiocomp.ucsd.edu/public/wenxingzhao/MUSIC_docker/rundocker.html). You can also make your own updates and re-compile to build your own version of MUSIC-docker using source code here: https://github.com/Irenexzwen/MUSIC-docker
 
 ## 3.2 MUSIC Snakemake pipeline
-If you are familiar with Snakemake pipeline, we also provided a Snakemake pipeline where you can update the config files according to your local working enviroment. 
+If you are familiar with Snakemake pipeline, we also provided a Snakemake pipeline where you can update the config files according to your local working enviroment: https://github.com/Irenexzwen/MUSIC-Snakemake
 
 
