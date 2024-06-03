@@ -22,6 +22,13 @@ cell_rna_human_reads <- fread(paste0(MASTER_OUTDIR, "6_stats/merge_RNA_human.sor
 
 human_cell_reads <- cell_dna_human_reads %>% left_join(cell_rna_human_reads, by=c("CB"="CB")) %>% filter(CB %in% human_cells) %>% mutate(human_rna_reads = replace_na(human_rna_reads, 0)) %>% mutate(total_reads = human_dna_reads + human_rna_reads)
 
+human_clusters <- fread(paste0(MASTER_OUTDIR, "6_stats/merge_human.sort.cluster_rna_dna.csv")) %>%
+  filter(CB %in% human_cells)
+
+human_clusters %<>% mutate(type = ifelse(cluster_size==1, "singleton",
+                                         ifelse(dna_reads>=2 & rna_reads==0, "DD",
+                                                ifelse(rna_reads>=2 & dna_reads==0, "RR", "RD"))))
+
 human_tol_contacts <- human_clusters %>%
   mutate(DD_con = dna_reads*(dna_reads-1)/2, 
          RR_con = rna_reads*(rna_reads-1)/2, 
